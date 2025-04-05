@@ -1,0 +1,64 @@
+# === Python & Django ===
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+db.sqlite3
+*.sqlite3
+.env
+.env.*
+instance/
+.mypy_cache/
+.pytest_cache/
+.coverage
+.tox/
+.idea/
+.vscode/
+*.log
+
+# Django specific
+/staticfiles/
+/media/
+
+# If you're using Django migrations but want to ignore pycache in them
+**/migrations/__pycache__/
+
+# === Node (React + Vite) ===
+node_modules/
+dist/
+build/
+*.log
+.vite/
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# === Vite Cache ===
+.vite/
+
+# === MacOS & Linux ===
+.DS_Store
+Thumbs.db
+
+# === MySQL Dumps / Backups ===
+*.sql
+*.sql.gz
+
+# === Coverage reports ===
+htmlcov/
+
+# === Optional: JetBrains IDEs ===
+.idea/
+
+# === Optional: Docker ===
+*.pid
+*.bak
+*.swp
+docker-compose.override.yml
+
+# === Optional: Virtualenv ===
+venv/
+env/
+ENV/
+.venv/
