@@ -1,8 +1,8 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 
-// https://vitejs.dev/config/
 export default defineConfig({
+  base: "/", // correct base path for Vercel
   plugins: [react()],
   server: {
     port: 5173,
@@ -10,5 +10,9 @@ export default defineConfig({
     hmr: {
       overlay: true
     }
+  },
+  build: {
+    outDir: "dist", // default for Vite but good to be explicit for Vercel
+    emptyOutDir: true
   }
-})
+});
