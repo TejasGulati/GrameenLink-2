@@ -79,7 +79,7 @@ WSGI_APPLICATION = 'gramseva_backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('DB_NAME'),
+        'NAME': "gramseva",
         'USER': os.getenv('DB_USER'),
         'PASSWORD': os.getenv('DB_PASSWORD'),
         'HOST': os.getenv('DB_HOST'),
@@ -167,8 +167,10 @@ GEMINI_CONFIG = {
 }
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",  # Vite default dev server port
-    "http://127.0.0.1:5173",
+    "http://localhost:5173",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+
+USE_TZ = True
+TIME_ZONE = 'UTC'

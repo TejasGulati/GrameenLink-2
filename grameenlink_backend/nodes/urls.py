@@ -1,34 +1,32 @@
 from django.urls import path
 from .views import (
     NodeListCreateView, NodeDetailView,
+    NodeInventoryListView, NodeInventoryDetailView,
     NodePerformanceView, NodeGenerateAIInsightsView,
-    NodeInventoryListCreateView, NodeInventoryDetailView,
-    NodeInventoryRestockRecommendationsView,
-    NodePerformanceListCreateView, NodePerformanceDetailView, 
-    NodePerformanceTrendsView,
-    RouteOptimizationListCreateView, RouteOptimizationDetailView,
-    RouteOptimizationGenerateView
+    RouteOptimizationView, RouteOptimizationGenerateView,
+    NodeMaintenanceLogView, NodeMaintenanceLogDetailView
 )
 
 urlpatterns = [
-    # Node routes
+    # Node management
     path('', NodeListCreateView.as_view(), name='node-list-create'),
     path('<int:pk>/', NodeDetailView.as_view(), name='node-detail'),
-    path('<int:pk>/performance/', NodePerformanceView.as_view(), name='node-performance'),
-    path('<int:pk>/generate-ai-insights/', NodeGenerateAIInsightsView.as_view(), name='node-generate-ai-insights'),
     
-    # Inventory routes
-    path('inventory/', NodeInventoryListCreateView.as_view(), name='inventory-list-create'),
+    # Node inventory
+    path('inventory/', NodeInventoryListView.as_view(), name='inventory-list'),
     path('inventory/<int:pk>/', NodeInventoryDetailView.as_view(), name='inventory-detail'),
-    path('inventory/generate-restock-recommendations/', NodeInventoryRestockRecommendationsView.as_view(), name='inventory-restock-recommendations'),
     
-    # Performance routes
-    path('performance/', NodePerformanceListCreateView.as_view(), name='performance-list-create'),
-    path('performance/<int:pk>/', NodePerformanceDetailView.as_view(), name='performance-detail'),
-    path('performance/trends/', NodePerformanceTrendsView.as_view(), name='performance-trends'),
+    # Node performance
+    path('performance/', NodePerformanceView.as_view(), name='performance-list'),
+    path('<int:pk>/performance/', NodePerformanceView.as_view(), name='node-performance'),
+    path('<int:pk>/generate-ai-insights/', NodeGenerateAIInsightsView.as_view(), name='generate-ai-insights'),
     
-    # Route optimization routes
-    path('routes/', RouteOptimizationListCreateView.as_view(), name='route-list-create'),
-    path('routes/<int:pk>/', RouteOptimizationDetailView.as_view(), name='route-detail'),
-    path('routes/generate-optimized-route/', RouteOptimizationGenerateView.as_view(), name='route-generate-optimized')
+    # Route optimization
+    path('routes/', RouteOptimizationView.as_view(), name='route-list'),
+    path('routes/generate/', RouteOptimizationGenerateView.as_view(), name='route-generate'),
+    
+    # Maintenance logs
+    path('maintenance/', NodeMaintenanceLogView.as_view(), name='maintenance-list'),
+    path('maintenance/<int:pk>/', NodeMaintenanceLogDetailView.as_view(), name='maintenance-detail'),
+    path('<int:node_id>/maintenance/', NodeMaintenanceLogView.as_view(), name='node-maintenance-list'),
 ]
