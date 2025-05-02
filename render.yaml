@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: gramseva-backend
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
+    startCommand: gunicorn gramseva_backend.wsgi:application
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: DATABASE_URL
+        fromDatabase:
+          name: gramseva-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: False
+      - key: ACCESS_TOKEN_LIFETIME_MINUTES
+        value: 30
+      - key: REFRESH_TOKEN_LIFETIME_DAYS
+        value: 1
+      - key: GEMINI_API_KEY
+        sync: false
+
+databases:
+  - name: gramseva-db
+    plan: free
+    databaseName: gramseva
+    user: gramseva_user
