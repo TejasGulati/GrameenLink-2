@@ -1,6 +1,7 @@
 from datetime import timedelta
 from pathlib import Path
 import os
+import dj_database_url
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -13,12 +14,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-n1oa0c^i0#&^hl9z7&$2+aq8^zeezyxb2iur^14-8i^kkdwjp%'
+# In production, this should be set via environment variable
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-n1oa0c^i0#&^hl9z7&$2+aq8^zeezyxb2iur^14-8i^kkdwjp%')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['gramseva-backend.onrender.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -37,13 +39,15 @@ INSTALLED_APPS = [
     'marketplace',
     'nodes',
     'dashboard',
-    'ai_integration'
+    'ai_integration',
+    'whitenoise.runserver_nostatic',  # Add whitenoise for static files
 ]
 
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Add whitenoise middleware
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -76,16 +80,26 @@ WSGI_APPLICATION = 'gramseva_backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# Configure PostgreSQL for Render deployment
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': "Glink1",
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT'),
-    }
+    'default': dj_database_url.config(
+        default=os.getenv('DATABASE_URL', 'postgresql://postgres:postgres@localhost:5432/glink1'),
+        conn_max_age=600
+    )
 }
+
+# Fallback to MySQL if database URL isn't set (development environment)
+if not os.getenv('DATABASE_URL'):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': "Glink1",
+            'USER': os.getenv('DB_USER'),
+            'PASSWORD': os.getenv('DB_PASSWORD'),
+            'HOST': os.getenv('DB_HOST'),
+            'PORT': os.getenv('DB_PORT'),
+        }
+    }
 
 
 # Password validation
@@ -123,6 +137,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -152,7 +168,7 @@ SIMPLE_JWT = {
     'TOKEN_TYPE_CLAIM': 'token_type',
 }
 
-# In settings.py
+# Gemini AI Configuration
 GEMINI_CONFIG = {
     'API_KEY': os.getenv('GEMINI_API_KEY'),
     'DEFAULT_MODEL': 'gemini-1.5-flash',  # or 'gemini-pro'
@@ -166,8 +182,10 @@ GEMINI_CONFIG = {
     }
 }
 
+# CORS Settings
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
+    "https://grameen-link-2.vercel.app",  # Your Vercel frontend
 ]
 
 CORS_ALLOW_CREDENTIALS = True
